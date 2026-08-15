@@ -107,26 +107,31 @@ Every `<img>` needs explicit `width`/`height` (stops layout shift), `decoding="a
 - `.feature` — landscape 3:2. Use this for group shots and buildings; a landscape photo
   forced into a 4:5 slot crops the people at the edges straight out of frame.
 
-### Placeholders
+### Empty image slots
 
-Empty image slots render as `<div class="ph">` — a dashed, correctly proportioned frame
-saying what belongs there. To fill one, replace the whole `<div class="ph">…</div>` with an
-`<img>`; the geometry is already right. Remaining ones are on `mission.html` (needs actual
-Tennessee photos) and `mediator.html`.
+These render as `<div class="ph">` — a dashed frame, already the right shape, reading
+"What photo would you like here?". To fill one, replace the whole `<div class="ph">…</div>`
+with an `<img>`; the geometry is already correct. Remaining ones are on `mission.html`
+(needs actual Tennessee photos) and `mediator.html`.
 
 ---
 
 ## Unfilled facts
 
-Anything not yet known ships as a visible `<span class="todo">[[TODO: …]]</span>` rather
-than being invented. **See `CONTENT-QUESTIONS.md`** — that is the list to send Tanner.
+Anything not yet known ships as a visible empty slot rather than being invented:
 
-```sh
-grep -rn 'TODO:' *.html        # every unfilled field on the site
+```html
+<span class="todo">What would you like here?</span>
 ```
 
-`story.html` also carries a visible draft notice (`<p class="notice">`). Delete that
-paragraph once the page is filled in.
+It renders as a small dashed box asking to be filled. To fill one, replace the whole
+`<span>` with the real text. **See `CONTENT-QUESTIONS.md`** — that is the list of what
+each slot is actually asking for, and the document to send Tanner.
+
+```sh
+grep -rn 'class="todo"' *.html      # every unfilled field on the site
+grep -c  'class="todo"' *.html      # count per page
+```
 
 ---
 
@@ -151,8 +156,17 @@ Embeds load content from Meta, which sets its own cookies. That is disclosed in 
 
 ## Deploying
 
-GitHub Pages, "Deploy from a branch" → branch `main`, folder `/` (root). No GitHub Actions
-needed, because there is nothing to build.
+**This is already live at https://tanneryost.com** — pushing to `main` republishes it in
+about a minute. Everything below is the record of how it was set up.
+
+Repo: `marktaylor-it/tanneryost-website`. GitHub Pages, "Deploy from a branch" → branch
+`main`, folder `/` (root). No GitHub Actions needed, because there is nothing to build.
+
+**Cloudflare note:** the DNS records are deliberately **unproxied (grey cloud)**. Cloudflare's
+proxy intercepts the HTTP challenge GitHub uses to issue its certificate, so proxying before
+the cert exists means HTTPS never provisions. If you later turn the orange cloud on, the
+zone's SSL/TLS mode must be **Full** — on *Flexible*, Cloudflare and GitHub Pages redirect to
+each other forever and the site stops loading.
 
 1. `git init && git add -A && git commit -m "..."`, create the repo, push `main`.
 2. Repo → Settings → Pages → Deploy from a branch → `main` / `/ (root)`.
@@ -177,7 +191,7 @@ needed, because there is nothing to build.
 ```sh
 grep -rE '(href|src)="/' index.html story.html mission.html \
      testimony.html beliefs.html mediator.html connect.html   # must print nothing
-grep -rn 'TODO:' *.html                                       # known gaps, expected
+grep -rn 'class="todo"' *.html                                # known gaps, expected
 ```
 
 Then in a browser: click every page; toggle Auto / Light / Dark; turn JavaScript **off** and

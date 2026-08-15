@@ -1,22 +1,25 @@
 # For Tanner — what the site still needs
 
 The site is built and every page is laid out. What is missing is the part only you can supply.
-Nothing has been invented on your behalf: anywhere a fact was unknown, the page shows a visible
-dashed box instead of a guess. This is the list of those boxes.
+Nothing has been invented on your behalf: anywhere a fact was unknown, the page shows a small
+dashed box reading "What would you like here?" instead of a guess. This document says what each
+of those boxes is actually asking for.
 
 Answer as much or as little as you like — anything left blank just stays a dashed box until it
 is filled. Written answers can be rough; they will be set into the page as-is unless you ask
 otherwise.
 
-Run `grep -rn 'TODO:' *.html` at any time to see exactly what is still open.
+Run `grep -rn 'class="todo"' *.html` at any time to see exactly what is still open.
 
 ---
 
 ## 1. The basics
 
-- [ ] **City and state** you are in now — appears in the site header area and every page footer.
-- [ ] **Email address** for the Connect page. Once the domain is live you could use something
-      like `hello@tanneryost.com`, or just give a personal address.
+- [ ] **Email address** for the Connect page — either something at the new domain, like
+      `hello@tanneryost.com`, or a personal address. This is the only way anyone can reach
+      Tanner off Instagram, so it is the highest-value single line on the site.
+- [ ] Optional: **city and state**. There is no slot for this at the moment — it was removed
+      rather than left blank. Say the word and it goes back into the header line and footers.
 - [ ] What you are **doing now** — study, work, calling, family. Two or three sentences.
 - [ ] Are you available for **firesides / youth groups / ward activities**? If yes, roughly how
       far will you travel? If no, that row gets deleted.
@@ -62,9 +65,6 @@ missing is your part. Write in the first person — it will read as your voice, 
       after. Returned missionaries reading this will know if it has been polished. *5–8 sentences.*
 - [ ] **06 Now** — what you are doing, why you started The Great Mediator, and what you want to be
       doing in ten years. *5–8 sentences.*
-
-Once every box on this page is filled, delete the grey draft notice near the top
-(`<p class="notice">…</p>`).
 
 ## 4. Testimony — `testimony.html`
 

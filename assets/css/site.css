@@ -237,34 +237,25 @@ p:last-child { margin-bottom: 0; }
 .meta li + li::before { content: " | "; opacity: .55; }
 ul.meta { list-style: none; padding: 0; }
 
-/* Unresolved facts ship as visibly unfilled fields — never as plausible
-   invention. Tanner fills these in; nothing here is guessed on his behalf.
-   Find them all with:  grep -rn 'TODO:' *.html   */
+/* An empty slot, asking to be filled. Unresolved facts ship as a visible
+   prompt — never as plausible invention. Nothing about Tanner is guessed on
+   his behalf; the page simply says the space is his.
+   Sentence case, not caps: this is a question to the owner of the site, and
+   a question set in shouting capitals reads as an error message.
+   Find them all with:  grep -rn 'class="todo"' *.html   */
 .todo {
   font-family: var(--font-mono);
-  font-size: .8em;
-  text-transform: uppercase;
-  letter-spacing: .06em;
+  font-size: .85em;
   color: var(--ink-muted);
   border: 1px dashed var(--border);
   border-radius: var(--radius);
-  padding: .1em .45em;
+  padding: .15em .5em;
   white-space: normal;
-}
-
-/* A standing note to the reader — currently the "this page is a draft" bar.
-   Deliberately plain and unemphatic: it is an admission, not a banner. Delete
-   the element from the page once the page no longer needs the admission. */
-.notice {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  line-height: 1.7;
-  color: var(--ink-muted);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  max-width: 68ch;
-  margin: 0;
+  /* Many of these sit inside .meta / .caption / .chapter-when / .idx-when,
+     which are uppercase with open tracking. Without these two resets the
+     prompt inherits that and starts SHOUTING AT THE OWNER OF THE SITE. */
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ---------- scripture --------------------------------------------------- */
@@ -562,11 +553,9 @@ section { padding-block: clamp(3rem, 7vw, 5.5rem); }
 .ph span {
   font-family: var(--font-mono);
   font-size: var(--step--1);
-  text-transform: uppercase;
-  letter-spacing: .1em;
   color: var(--ink-muted);
-  max-width: 24ch;
-  line-height: 1.6;
+  max-width: 26ch;
+  line-height: 1.7;
 }
 .ph--wide { aspect-ratio: 3 / 2; }
 .ph--square { aspect-ratio: 1 / 1; }
