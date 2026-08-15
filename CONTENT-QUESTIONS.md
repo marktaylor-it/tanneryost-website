@@ -47,8 +47,10 @@ This is the page with the most blanks, because almost nothing about your mission
 
 ## 3. My Story — `story.html`
 
-Six chapters. Each one has a scripture and a short framing paragraph already in place; what is
-missing is your part. Write in the first person — it will read as your voice, because it is.
+Six chapters. Each one has a title and a scripture in place and nothing else — the framing
+paragraphs that used to sit here were removed, because they were guesses about your life
+written by someone who has not lived it. Write in the first person; it will read as your
+voice, because it is.
 
 - [ ] **01 Before** — where you grew up and who was in the house. Was the Church already part of
       family life, or did it arrive later? One specific childhood memory you now recognise as the
