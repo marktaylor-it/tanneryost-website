@@ -1,0 +1,1016 @@
+/* ============================================================================
+   tanneryost.com — site styles
+   Hand-written. No framework, no build step, no npm. Works offline.
+
+   ANTI-DRIFT RULES — these are what separate this from a generic template.
+   If any one of them lapses, the design collapses. Do not "improve" them away.
+     1. Body copy is NEVER a serif. The serif is display and scripture only.
+     2. Nothing is centered except the footer bottom line and the placeholders.
+     3. No border-radius above 2px. No exceptions on this site.
+     4. No box-shadow as decoration. Depth comes from 1px borders and one
+        offset frame. The inset bars on hover are structure, not shadow.
+     5. No gradients. Not one.
+     6. Display serif is always weight 400. Never bold. Bold serif at display
+        size is what makes a site look like a 2009 blog.
+     7. The mono voice carries SCRIPTURE REFERENCES, not decoration. If a mono
+        label is not a reference, a date, or a section name, it should not be
+        mono. This is the site's whole typographic conceit — protect it.
+     8. Scripture wording is NEVER altered, and always carries its reference.
+        Quoting part of a verse is fine — changing a word inside it is not.
+        Every verse on this site was checked against churchofjesuschrist.org
+        before launch. Check any new one the same way; do not quote from
+        memory. Memory is exactly how "And I would not that ye think" became
+        "I would not that ye should think" in an early draft of story.html.
+
+   TWO DELIBERATE, BOUNDED EXCEPTIONS TO THE "NO DEPENDENCIES" RULE:
+     a. assets/js/reveal.js adds one scroll reveal. Content is VISIBLE BY
+        DEFAULT — only `.js [data-reveal]` hides, so a visitor without JS
+        loses nothing. See the safety net in each page's <head>.
+     b. Instagram's embed.js loads on mediator.html and mission.html ONLY.
+        Every other page stays fully offline-capable. The bare <blockquote>
+        is styled to read as a finished link card if the script never loads.
+   ========================================================================= */
+
+/* ---------- tokens ------------------------------------------------------ */
+
+:root {
+  --bg: #F7F5F1;
+  --surface: #FFFFFF;
+  --ink: #16181C;
+  --ink-muted: #5F6670;
+  --border: #DCD9D2;
+  --graphite: #1F2A33;
+  --graphite-ink: #F1EFE9;
+  --quiet-bg: #EFEDE7;
+
+  /* Temple blue. The default accent, used on every page that is about Tanner
+     himself rather than about one of the two named efforts. */
+  --accent: #2C4A5E;
+  --accent-fill: #3F6A86;
+  --accent-tint: rgba(63, 106, 134, .08);
+
+  --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino,
+                  "Book Antiqua", "Hoefler Text", Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               "Noto Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+
+  --step--1: .875rem;      /* references and meta. 14px, not 13 — this size
+                              carries most of the page's structure. */
+  --step-0: 1.0625rem;
+  --step-1: 1.3125rem;
+  --step-2: clamp(1.5rem, 1.15rem + 1.4vw, 1.9375rem);
+  --step-3: clamp(1.9375rem, 1.35rem + 2.4vw, 2.75rem);
+  --step-4: clamp(2.5rem, 1.4rem + 4.6vw, 4.5rem);
+
+  --gutter: clamp(20px, 5vw, 48px);
+  --measure: 68ch;
+  --radius: 2px;
+}
+
+/* SECTION-ACCENT LAW — one mechanism, zero exceptions.
+   --accent-fill is the raw hex. It may ONLY be a <=4px rule, a <=12px swatch,
+   or an inset hover bar. Never text, never a button, never a large panel.
+   --accent is the darkened AA-safe variant and is the ONLY one allowed to
+   carry colour in text. Naming them this way makes the contrast-failing
+   colour awkward to reach for by accident.
+   Only two classes, deliberately — Tanner has one message, not a portfolio.
+   They go on <body> for a page, and on .idx-row for a single row. */
+.t-mission  { --accent: #7A5A20; --accent-fill: #C9A24A;
+              --accent-tint: rgba(201, 162, 74, .12); }
+.t-mediator { --accent: #3D4278; --accent-fill: #5C63A8;
+              --accent-tint: rgba(92, 99, 168, .10); }
+
+/* ---------- dark theme -------------------------------------------------- *
+ * Three states, driven by data-theme on <html>:
+ *   absent          follow the operating system  (the default)
+ *   "light"         forced light, even if the OS says dark
+ *   "dark"          forced dark,  even if the OS says light
+ *
+ * The dark declarations are deliberately written TWICE — once inside the media
+ * query for visitors following their OS, once for visitors who picked dark from
+ * the toggle. CSS cannot share one block between a media query and an attribute
+ * selector, and light-dark() would silently blank the whole palette on older
+ * browsers, which is a worse failure than duplication. KEEP THE TWO IN SYNC.
+ * ------------------------------------------------------------------------ */
+
+:root { color-scheme: light; }
+:root[data-theme="light"] { color-scheme: light; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111417;
+    --surface: #191D21;
+    --ink: #E9ECEF;
+    --ink-muted: #98A0A8;
+    /* Must stay this light. The entire structure of this site is 1px rules;
+       anything darker makes the page look like it failed to load. */
+    --border: #3A4149;
+    --quiet-bg: #171A1D;
+    --accent: #8FB6CE;
+    --accent-tint: rgba(143, 182, 206, .16);
+  }
+  /* Tints are re-tuned for dark: the light-mode 8-12% alpha is a ~2% lift on
+     #111417 and vanishes entirely. */
+  :root:not([data-theme="light"]) .t-mission  { --accent: #DDBB6A; --accent-tint: rgba(221, 187, 106, .16); }
+  :root:not([data-theme="light"]) .t-mediator { --accent: #A2A8E4; --accent-tint: rgba(162, 168, 228, .16); }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111417;
+  --surface: #191D21;
+  --ink: #E9ECEF;
+  --ink-muted: #98A0A8;
+  --border: #3A4149;
+  --quiet-bg: #171A1D;
+  --accent: #8FB6CE;
+  --accent-tint: rgba(143, 182, 206, .16);
+}
+:root[data-theme="dark"] .t-mission  { --accent: #DDBB6A; --accent-tint: rgba(221, 187, 106, .16); }
+:root[data-theme="dark"] .t-mediator { --accent: #A2A8E4; --accent-tint: rgba(162, 168, 228, .16); }
+
+/* ---------- base -------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { overflow-x: clip; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+/* Every grid/flex child holding text needs this or long words force overflow. */
+.grid > *, .flex > * { min-width: 0; }
+
+a { color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--surface); color: var(--ink);
+  padding: .75rem 1rem; z-index: 100;
+  font-family: var(--font-mono); font-size: var(--step--1);
+}
+.skip:focus { left: 0; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- typography -------------------------------------------------- */
+
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 400;                 /* never bold — see anti-drift rule 6 */
+  margin: 0;
+}
+h1 { font-size: var(--step-3); line-height: 1.15; letter-spacing: -.02em; }
+h2 { font-size: var(--step-2); line-height: 1.25; letter-spacing: -.01em; }
+h3 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--step-1);
+  line-height: 1.35;
+  margin: 0;
+}
+
+p { margin: 0 0 1.1em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+
+.lede {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.4;
+  max-width: 34ch;
+}
+
+/* The section label. Mono caps over a hairline — the same fixture on every
+   page, so a reader always knows where a section begins. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--ink-muted);
+  margin: 0 0 1.5rem;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* A scripture reference riding on the section label. This is the site's
+   signature move — where Sai's dossier numbered its figures, this one cites
+   chapter and verse. Tabular numerals so a column of references aligns. */
+.eyebrow .ref {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.eyebrow .ref::before { content: " \2014  "; color: var(--ink-muted); }
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;   /* dates align like a printed record */
+  margin: 0;
+}
+.meta li { display: inline; }
+.meta li + li::before { content: " | "; opacity: .55; }
+ul.meta { list-style: none; padding: 0; }
+
+/* Unresolved facts ship as visibly unfilled fields — never as plausible
+   invention. Tanner fills these in; nothing here is guessed on his behalf.
+   Find them all with:  grep -rn 'TODO:' *.html   */
+.todo {
+  font-family: var(--font-mono);
+  font-size: .8em;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: .1em .45em;
+  white-space: normal;
+}
+
+/* A standing note to the reader — currently the "this page is a draft" bar.
+   Deliberately plain and unemphatic: it is an admission, not a banner. Delete
+   the element from the page once the page no longer needs the admission. */
+.notice {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.7;
+  color: var(--ink-muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  max-width: 68ch;
+  margin: 0;
+}
+
+/* ---------- scripture --------------------------------------------------- */
+
+/* A quoted verse. Serif, hanging opening quote, reference always attached.
+   Used inline in the flow of a page; the graphite band handles the loud ones. */
+.verse {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: 0 0 1.5rem;
+  padding-left: 18px;
+  border-left: 3px solid var(--accent);
+}
+.verse p { margin: 0 0 .6em; max-width: none; font-family: inherit; }
+.verse cite {
+  display: block;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: .75rem;
+}
+
+/* ---------- layout ------------------------------------------------------ */
+
+.wrap {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+section { padding-block: clamp(3rem, 7vw, 5.5rem); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+@media (max-width: 899px) {
+  .grid { grid-template-columns: 1fr; }
+  .grid > * { grid-column: auto !important; }
+}
+
+.full-bleed {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------- header / nav ------------------------------------------------ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+/* The accent stripe. Solid --accent-fill, taking whichever section colour the
+   page carries. No gradient — see anti-drift rule 5. */
+.site-header::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--accent-fill);
+}
+
+.nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 1.5rem;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: .9375rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink);
+  text-decoration: none;
+  padding-block: .875rem;
+}
+
+/* Seven links on a seven-page site never needed a disclosure. A wrapping flex
+   row removes the JS, the overlay edge cases, and the empty-accessible-name
+   bug that a checkbox-under-an-aria-hidden-label pattern would introduce. */
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0 clamp(.75rem, 1.8vw, 1.4rem);
+}
+.nav-links a {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding-block: .875rem;          /* 14px + 14px + line-height => 44px target */
+  transition: color 100ms ease;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a[aria-current="page"] {
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--accent);   /* --accent (text-safe), never --accent-fill */
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 clamp(.75rem, 2vw, 1.25rem);
+}
+
+/* Theme toggle. Mono uppercase like everything else in the chrome, so it reads
+   as one more printed label rather than a widget bolted on. It ships with the
+   [hidden] attribute and theme.js removes it, so a visitor with JS disabled
+   never sees a dead control — they just get their OS preference. */
+.theme-toggle {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .5rem .65rem;
+  min-height: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  transition: color 100ms ease, border-color 100ms ease;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-muted); }
+.theme-toggle[hidden] { display: none; }
+
+.theme-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--ink-muted);
+  background: var(--ink);
+}
+/* Auto shows a half-filled dot: the site is deferring to the OS, not asserting
+   a colour of its own. */
+.theme-toggle[data-state="auto"] .theme-dot {
+  background: linear-gradient(90deg, var(--ink) 0 50%, transparent 50% 100%);
+}
+.theme-toggle[data-state="light"] .theme-dot { background: transparent; }
+
+@media (max-width: 720px) {
+  .nav-inner { gap: 0; }
+  .brand { width: 100%; padding-bottom: .35rem; }
+  .nav-right { width: 100%; padding-bottom: .5rem; }
+  .nav-links { width: 100%; }
+}
+
+/* ---------- masthead ---------------------------------------------------- */
+
+.masthead { padding-block: clamp(2.5rem, 6vw, 6rem) clamp(3rem, 7vw, 5.5rem); }
+.masthead .lede { max-width: 32ch; margin-bottom: 1.25rem; }
+
+.facets {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  margin: .9rem 0 1.6rem;
+}
+
+.motto {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin: 0 0 1.75rem;
+  max-width: 40ch;
+}
+
+.linkrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.linkrow a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
+.linkrow a:hover { border-bottom-width: 2px; }
+
+/* Portrait with a letterpress-style offset frame. This is the one offset
+   element on the site (anti-drift rule 4 permits exactly this). */
+/* The frame anchors to a wrapper around the image only. Anchoring it to the
+   <figure> would stretch it around the caption as well. */
+.portrait-frame { position: relative; }
+.portrait img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 28%;      /* keeps the eyeline in the upper third */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+@media (min-width: 900px) {
+  .portrait-frame::before {
+    content: "";
+    position: absolute;
+    inset: 20px -20px -20px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    z-index: -1;
+  }
+}
+/* The source portrait is vertical. A 3:2 mobile crop would slice a band out of
+   the middle of his face, so mobile squares off instead of going landscape. */
+@media (max-width: 899px) {
+  .portrait img { aspect-ratio: 1 / 1; object-position: 50% 30%; }
+}
+
+/* A wide figure for landscape photographs — the same letterpress offset frame
+   as the portrait, at 3:2. Group shots and buildings belong here; forcing them
+   into the 4:5 .portrait slot crops the people at the edges straight out. */
+.feature { margin: 0; }
+.feature-frame { position: relative; }
+.feature img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+@media (min-width: 900px) {
+  .feature-frame::before {
+    content: "";
+    position: absolute;
+    inset: 20px -20px -20px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    z-index: -1;
+  }
+}
+
+.caption {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 10px;
+}
+
+/* ---------- photo placeholders ------------------------------------------ *
+ * Tanner's Instagram is 100% video reels — there is not one photograph to
+ * work from, and the reel thumbnails are 360x640 and mostly other people's
+ * copyrighted media. So every image slot ships as a labelled, correctly
+ * proportioned frame instead of a stock photo standing in for a real person.
+ * It is honest, it holds the exact layout the photo will occupy, and it tells
+ * whoever is filling it in precisely what to supply.
+ * Delete the .ph block and drop in an <img> — the geometry is already right.
+ * ----------------------------------------------------------------------- */
+.ph {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--quiet-bg);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  aspect-ratio: 4 / 5;
+}
+.ph span {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  max-width: 24ch;
+  line-height: 1.6;
+}
+.ph--wide { aspect-ratio: 3 / 2; }
+.ph--square { aspect-ratio: 1 / 1; }
+@media (max-width: 899px) {
+  .portrait .ph { aspect-ratio: 1 / 1; }
+}
+
+/* ---------- the index (the home centrepiece) ---------------------------- */
+/* Not cards. A printed index. Cards are the failure state. */
+
+.idx { border-bottom: 1px solid var(--border); }
+
+.idx-row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  padding: 2rem 1.25rem 2rem 0;
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  background: transparent;
+  transition: background-color 120ms ease;
+}
+.idx-num {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  letter-spacing: .12em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.idx-name {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  display: block;
+}
+.idx-tag {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  display: block;
+  margin: .4rem 0 .6rem;
+}
+.idx-desc { margin: 0; max-width: 46ch; }
+.idx-when {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.idx-row:hover, .idx-row:focus-visible {
+  background: var(--accent-tint);                              /* fallback */
+  background: color-mix(in srgb, var(--accent-fill) 8%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent-fill);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .idx-row:hover,
+  :root:not([data-theme="light"]) .idx-row:focus-visible {
+    background: var(--accent-tint);
+    background: color-mix(in srgb, var(--accent-fill) 16%, transparent);
+  }
+}
+:root[data-theme="dark"] .idx-row:hover,
+:root[data-theme="dark"] .idx-row:focus-visible {
+  background: var(--accent-tint);
+  background: color-mix(in srgb, var(--accent-fill) 16%, transparent);
+}
+.idx-row:hover .idx-num, .idx-row:focus-visible .idx-num { color: var(--accent); }
+
+@media (max-width: 639px) {
+  .idx-row { grid-template-columns: 1fr; padding-right: .5rem; }
+  .idx-when { text-align: left; margin-top: .75rem; }
+  .idx-num { margin-bottom: .35rem; }
+}
+
+/* ---------- bands ------------------------------------------------------- */
+
+/* The loud band: graphite, a verse or a line of his own, an attribution. */
+.band-quote {
+  background: var(--graphite);
+  color: var(--graphite-ink);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+.band-quote blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  line-height: 1.35;
+  max-width: 24em;
+  text-indent: -.42em;              /* hanging opening quote */
+}
+.band-quote .after {
+  font-family: var(--font-body);
+  font-size: var(--step-1);
+  line-height: 1.55;
+  max-width: 46ch;
+  margin-top: 1.5rem;
+  color: #D2D6DA;
+}
+.band-quote .attrib {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #A3ABB2;
+  margin-top: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* THE QUIET BAND — one section per page where the system deliberately stops.
+   No accent colour, no mono, no reference, no motion, longer leading. On a
+   site about faith, a room with nothing in it does more work than another
+   label would. Do not add a rule, a heading, or a caption to this. That is
+   the entire point. */
+.band-quiet {
+  background: var(--quiet-bg);
+  padding-block: clamp(4rem, 9vw, 7rem);
+}
+.band-quiet p {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.75;
+  max-width: 30ch;
+  margin: 0;
+}
+
+/* ---------- chapters (the My Story spine) ------------------------------- */
+
+.chapters { counter-reset: ch; margin: 0; padding: 0; list-style: none; }
+.chapter {
+  border-top: 1px solid var(--border);
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
+}
+.chapter:last-child { border-bottom: 1px solid var(--border); }
+.chapter-head {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+.chapter-n {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  letter-spacing: .12em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.chapter h2 { font-size: var(--step-3); line-height: 1.15; }
+.chapter-when {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: .5rem;
+}
+.chapter-body { padding-left: 5rem; }
+@media (max-width: 639px) {
+  .chapter-head { grid-template-columns: 1fr; gap: .35rem; }
+  .chapter-body { padding-left: 0; }
+}
+
+/* ---------- ledgers, lists, cards --------------------------------------- */
+
+.ledger { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
+.ledger li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0 1.25rem;
+  align-items: baseline;
+  border-top: 1px solid var(--border);
+  padding-block: 20px;
+}
+.ledger .n {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  letter-spacing: .12em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.ledger .t { font-family: var(--font-display); font-size: var(--step-1); line-height: 1.4; }
+
+.roles { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
+.roles > li { border-top: 1px solid var(--border); padding-block: 1.75rem; }
+.roles h3 { margin-bottom: .35rem; }
+.roles .meta { margin-bottom: .9rem; }
+.roles ul { margin: .75rem 0 0; padding-left: 1.1rem; }
+.roles ul li { margin-bottom: .35rem; max-width: var(--measure); }
+
+/* A record of plain facts — mission dates, areas, callings. Two columns of
+   key/value separated by hairlines, so an unfilled row is obvious. */
+.facts { margin: 0; border-bottom: 1px solid var(--border); }
+.facts > div {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  border-top: 1px solid var(--border);
+  padding-block: 1.1rem;
+}
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+}
+.facts dd { margin: 0; font-family: var(--font-display); font-size: var(--step-1); }
+@media (max-width: 559px) {
+  .facts > div { grid-template-columns: 1fr; gap: .4rem; }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cards li {
+  background: var(--accent-tint);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.cards h3 {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  margin-bottom: .6rem;
+}
+.cards p { font-size: var(--step-0); }
+
+/* ---------- the invitation ---------------------------------------------- *
+ * The one place on the site that asks the reader to do something. It is a
+ * list of doors, not a marketing panel — every row goes to the Church's own
+ * site, never to a form of ours. Nothing here collects anything.
+ * ----------------------------------------------------------------------- */
+.invite { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
+.invite li { border-top: 1px solid var(--border); }
+.invite a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  padding: 1.5rem .75rem 1.5rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 120ms ease;
+}
+.invite a:hover, .invite a:focus-visible {
+  background: var(--accent-tint);
+  box-shadow: inset 3px 0 0 var(--accent-fill);
+}
+.invite .what { font-family: var(--font-display); font-size: var(--step-2); display: block; }
+.invite .why { display: block; margin-top: .4rem; color: var(--ink-muted); max-width: 52ch; }
+.invite .go {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.invite a:hover .go, .invite a:focus-visible .go { color: var(--accent); }
+@media (max-width: 639px) {
+  .invite a { grid-template-columns: 1fr; }
+  .invite .go { margin-top: .75rem; }
+}
+
+/* ---------- instagram embeds -------------------------------------------- *
+ * Loaded on mediator.html and mission.html only. Two things matter here:
+ *   1. The bare <blockquote class="instagram-media"> must look finished on its
+ *      own. If a visitor blocks scripts, or Instagram is down, or the post is
+ *      deleted, they get a real card with a working link — not a broken box.
+ *   2. When embed.js DOES run it rewrites the blockquote with its own inline
+ *      styles and an iframe. Inline styles beat these class selectors, so the
+ *      handover happens on its own with nothing to coordinate.
+ * ----------------------------------------------------------------------- */
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+.instagram-media {
+  margin: 0 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.instagram-media a {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+.embed-note {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 2rem;
+  max-width: none;
+}
+
+/* ---------- profiles / contact ------------------------------------------ */
+
+.contact-list { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); }
+.contact-list li { border-top: 1px solid var(--border); padding-block: 1.5rem; display: grid; grid-template-columns: 8rem 1fr; gap: 0 1.5rem; align-items: baseline; }
+.contact-list dt, .contact-list .k {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+}
+.contact-list .v { font-family: var(--font-display); font-size: var(--step-1); }
+.contact-list .v a { text-decoration: none; border-bottom: 1px solid var(--accent); }
+.contact-list .note { display: block; font-family: var(--font-body); font-size: var(--step-0); color: var(--ink-muted); margin-top: .4rem; max-width: 46ch; }
+@media (max-width: 559px) {
+  .contact-list li { grid-template-columns: 1fr; gap: .4rem; }
+}
+
+/* ---------- cross-index ------------------------------------------------- */
+
+.cross { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 2rem; border-bottom: 1px solid var(--border); }
+.cross a {
+  display: block;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+}
+.cross .n { font-family: var(--font-mono); font-size: .8125rem; letter-spacing: .12em; color: var(--ink-muted); }
+.cross .name { font-family: var(--font-display); font-size: var(--step-2); display: block; margin-top: .3rem; }
+.cross a:hover .name { color: var(--accent); }
+
+/* ---------- footer ------------------------------------------------------ */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding-block: 4rem 2.5rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+}
+.footer-grid h2 {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  letter-spacing: 0;
+  margin-bottom: .35rem;
+}
+.footer-grid ul { list-style: none; margin: 0; padding: 0; }
+.footer-grid li { margin-bottom: .5rem; }
+.footer-grid a {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+}
+.footer-grid a:hover { color: var(--ink); }
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 1px;
+  display: inline-block;
+}
+.sw-self { background: #3F6A86; }
+.sw-mission { background: #C9A24A; }
+.sw-mediator { background: #5C63A8; }
+
+.colophon {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-muted);
+  text-align: center;         /* one of the two centered things on the site */
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+}
+.colophon a { color: inherit; }
+
+/* ---------- motion ------------------------------------------------------ *
+ * The one animation on the site. Content is VISIBLE BY DEFAULT: the rule below
+ * only bites once an inline <head> script has added `.js` to <html>, and that
+ * script also arms a load-event safety net that strips `.js` again if
+ * reveal.js never initialises. A visitor with JS off, or on a flaky
+ * connection, sees the whole page — they just see it without the fade.
+ * ----------------------------------------------------------------------- */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 450ms ease, transform 450ms cubic-bezier(.2, .6, .2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Belt and braces: reveal.js already skips the observer entirely under
+     reduced motion, but if it never runs, nothing may stay hidden. */
+  .js [data-reveal] { opacity: 1; transform: none; }
+}

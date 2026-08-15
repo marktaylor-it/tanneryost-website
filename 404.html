@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | Tanner Yost</title>
+<meta name="robots" content="noindex">
+
+<!-- ============================================================================
+     404.html IS THE ONE FILE ON THIS SITE THAT BREAKS THE RELATIVE-PATH RULE,
+     and it has to. GitHub Pages serves this file for ANY missing path, at any
+     depth — a visitor hitting /some/deep/typo would resolve a relative
+     "assets/css/site.css" to "/some/deep/assets/css/site.css" and get an
+     unstyled page. So:
+       1. The styles below are INLINED rather than linked. This page then looks
+          correct at every depth, on the apex domain and on the Pages subpath
+          alike, with no request that can 404 in turn.
+       2. The links back into the site are ROOT-RELATIVE ("/story.html"). That
+          is correct on tanneryost.com. On a project-page subpath
+          (user.github.io/repo/) they would point at the user root instead —
+          an acceptable trade for a page nobody should reach, and moot once the
+          custom domain is live.
+     The verification grep in README.md excludes this file for exactly this
+     reason. Do not "fix" the paths here to match the other pages.
+     ========================================================================= -->
+
+<style>
+:root {
+  --bg: #F7F5F1; --ink: #16181C; --ink-muted: #5F6670; --border: #DCD9D2;
+  --accent: #2C4A5E; --accent-fill: #3F6A86;
+  --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino,
+                  "Book Antiqua", "Hoefler Text", Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               "Noto Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  color-scheme: light;
+}
+/* Written twice for the same reason as site.css — a media query and an
+   attribute selector cannot share a block. Keep the two in sync. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111417; --ink: #E9ECEF; --ink-muted: #98A0A8; --border: #3A4149;
+    --accent: #8FB6CE;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111417; --ink: #E9ECEF; --ink-muted: #98A0A8; --border: #3A4149;
+  --accent: #8FB6CE;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column;
+}
+.stripe { height: 3px; background: var(--accent-fill); }
+.wrap { max-width: 1120px; margin-inline: auto; padding-inline: clamp(20px, 5vw, 48px); width: 100%; }
+header { border-bottom: 1px solid var(--border); }
+.brand {
+  display: inline-block; font-family: var(--font-display); font-size: .9375rem;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--ink);
+  text-decoration: none; padding-block: .875rem;
+}
+main { flex: 1; padding-block: clamp(3rem, 10vw, 7rem); }
+.code {
+  font-family: var(--font-mono); font-size: .875rem; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--ink-muted);
+  border-top: 1px solid var(--border); padding-top: 12px; margin: 0 0 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+h1 {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2.5rem, 1.4rem + 4.6vw, 4.5rem); line-height: 1.08;
+  letter-spacing: -.02em; margin: 0;
+}
+.lede {
+  font-family: var(--font-display); font-size: clamp(1.5rem, 1.15rem + 1.4vw, 1.9375rem);
+  line-height: 1.4; max-width: 34ch; margin: 1.5rem 0 2.5rem;
+}
+ul { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--border); max-width: 34rem; }
+li { border-top: 1px solid var(--border); }
+li a {
+  display: block; padding: 1.1rem .5rem 1.1rem 0; text-decoration: none; color: inherit;
+  font-family: var(--font-display); font-size: 1.3125rem;
+  transition: color 120ms ease;
+}
+li a:hover, li a:focus-visible { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+footer {
+  border-top: 1px solid var(--border); padding-block: 2rem;
+  font-family: var(--font-mono); font-size: .875rem; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--ink-muted); text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .001ms !important; }
+}
+</style>
+<script>
+/* Matches the pre-paint snippet on every other page so a visitor who chose a
+   theme does not get flashed back to light on a 404. */
+try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}
+</script>
+</head>
+<body>
+
+<div class="stripe"></div>
+<header>
+  <div class="wrap"><a class="brand" href="/">Tanner Yost</a></div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="code">Error 404</p>
+    <h1>Not found</h1>
+    <p class="lede">That page isn&rsquo;t here. It may have moved, or the link may have been mistyped.</p>
+    <ul>
+      <li><a href="/">Home &rarr;</a></li>
+      <li><a href="/story.html">My Story &rarr;</a></li>
+      <li><a href="/mission.html">The Mission &rarr;</a></li>
+      <li><a href="/testimony.html">Testimony &rarr;</a></li>
+      <li><a href="/beliefs.html">Beliefs &rarr;</a></li>
+      <li><a href="/mediator.html">The Great Mediator &rarr;</a></li>
+      <li><a href="/connect.html">Connect &rarr;</a></li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">&copy; 2026 Tanner Yost</div>
+</footer>
+
+</body>
+</html>
