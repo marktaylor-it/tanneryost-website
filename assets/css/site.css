@@ -874,17 +874,6 @@ section { padding-block: clamp(3rem, 7vw, 5.5rem); }
   text-decoration: none;
   border-bottom: 1px solid var(--accent);
 }
-.embed-note {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--ink-muted);
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-  margin-top: 2rem;
-  max-width: none;
-}
 
 /* ---------- profiles / contact ------------------------------------------ */
 
