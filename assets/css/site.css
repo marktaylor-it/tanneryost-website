@@ -841,6 +841,36 @@ section { padding-block: clamp(3rem, 7vw, 5.5rem); }
   .invite .go { margin-top: .75rem; }
 }
 
+/* ---------- the Rexburg invitation -------------------------------------- *
+ * Deliberately NOT a row in .invite. Every list up there promises that each
+ * link goes to the Church's own site and that nothing collects your details;
+ * this one opens a Messenger group chat run by people locally. Keeping it in
+ * its own block is what keeps that promise true.
+ * ------------------------------------------------------------------------ */
+.cta {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-fill);   /* <=4px rule: allowed use of --accent-fill */
+  border-radius: var(--radius);
+  background: var(--accent-tint);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  max-width: 44rem;
+}
+.cta h2 { font-size: var(--step-2); margin-bottom: .6rem; }
+.cta p { margin: 0 0 1.4rem; max-width: 46ch; }
+.cta-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;                 /* touch target */
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 2px solid var(--accent);
+}
+.cta-go:hover, .cta-go:focus-visible { color: var(--accent); }
+
 /* ---------- instagram embeds -------------------------------------------- *
  * Loaded on mediator.html and mission.html only. Two things matter here:
  *   1. The bare <blockquote class="instagram-media"> must look finished on its
